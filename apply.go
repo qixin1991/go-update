@@ -12,7 +12,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/inconshreveable/go-update/internal/osext"
+	"github.com/qixin1991/go-update/internal/osext"
 )
 
 var (
@@ -72,6 +72,7 @@ func Apply(update io.Reader, opts Options) error {
 	// get target path
 	var err error
 	opts.TargetPath, err = opts.getPath()
+	fmt.Println("---> 当前执行路径:", opts.TargetPath)
 	if err != nil {
 		return err
 	}
@@ -106,7 +107,7 @@ func Apply(update io.Reader, opts Options) error {
 	filename := filepath.Base(opts.TargetPath)
 
 	// Copy the contents of newbinary to a new executable file
-	newPath := filepath.Join(updateDir, fmt.Sprintf(".%s.new", filename))
+	newPath := filepath.Join(updateDir, fmt.Sprintf("%s.new", filename))
 	fp, err := openFile(newPath, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, opts.TargetMode)
 	if err != nil {
 		return err
@@ -126,8 +127,9 @@ func Apply(update io.Reader, opts Options) error {
 	oldPath := opts.OldSavePath
 	removeOld := opts.OldSavePath == ""
 	if removeOld {
-		oldPath = filepath.Join(updateDir, fmt.Sprintf(".%s.old", filename))
+		oldPath = filepath.Join(updateDir, fmt.Sprintf("%s.old", filename))
 	}
+	fmt.Println("---> OldPath: ", oldPath)
 
 	// delete any existing old exec file - this is necessary on Windows for two reasons:
 	// 1. after a successful update, Windows can't remove the .old file because the process is still running
